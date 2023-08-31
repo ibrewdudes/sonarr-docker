@@ -14,7 +14,7 @@
 ** *jackett:* para buscar los torrents de las películas y series
 ** *transmission:* para hacer las descargas
 * *make-dirs* para crear los directorios de persistencia de las aplicaciones anteriores
-
+* *servarr.sh* para levantar los contenedores e iniciar las descargas
 
 == Uso
 
