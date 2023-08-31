@@ -1,0 +1,72 @@
+:icons: font
+:source-highlighter: highlightjs
+:sectnums:
+:toc:
+
+
+= Servarr
+
+== Contenido del repositorio
+
+* *docker-compose.yaml* con la configuración para desplegar:
+** *sonarr:* para descarga de series
+** *radarr:* para descarga de películas
+** *jackett:* para buscar los torrents de las películas y series
+** *transmission:* para hacer las descargas
+* *make-dirs* para crear los directorios de persistencia de las aplicaciones anteriores
+
+
+== Uso
+
+[WARNING]
+Es necesario tener instalado docker o podman antes de lanzar el script *sonarr-start.sh*
+
+* Editamos el fichero *envfile* para definir la ubicación del directorio donde irán las descargas y el directorio con el fichero *docker-compose.yaml*:
+** *DOWNLOADS_HOME:* directorio raíz donde estarán las descargas
+** *COMPOSE_HOME:* directorio donde hemos descargado el proyecto. Es aquí donde se buscará el fichero *docker-compose.yaml*
+* Ejecutamos el script *make-dirs* para crear la estructura de directorios usada para guardar las descargas y la configuración de las aplicaciones
+* Ejecutamos el script *sonarr.sh* para iniciar las descargas
+* Elegimos los buscadores que queremos usar en jackett y configuramos cada una de las aplicaciones:
+** Directorio donde queremos que se almacenen las descargas (ver la estructura de directorios usada más abajo)
+** El cliente de descargas que vamos a usar (transmission)
+** El buscador de torrents (jackett)
+* Cuando queramos parar los contenedores ejecutamos *sonarr.sh down*
+
+
+== Estructura de directorios usada
+
+----
+{DIRECTORIO_BASE}
+├── config
+│   ├── jackett
+│   ├── radarr
+│   ├── sonarr
+│   └── transmission
+│       ├── blocklists
+│       ├── crontabs
+│       ├── resume
+│       └── torrents
+└── data
+    └── transmission
+        ├── downloads
+        │   ├── books
+        │   ├── complete
+        │   ├── incomplete
+        │   ├── movies
+        │   ├── music
+        │   └── tv
+        └── watch
+
+----
+
+Descripción de los directorios:
+
+* *config* con las configuraciones de las aplicaciones usadas
+* *data* con las descargas. Todos los directorios cuelgan de transmission para que al generar los hard links no se dupliquen los ficheros
+** *transmission/downloads/books:* descargas de readarr (no incluído en *docker-compose.yaml*)
+** *transmission/downloads/complete:* descargas completadas por transmission. Cuando se completa una descarga veremos una copia aquí y otra en el directorio de la aplicación asociada pero en realidad se crea un hardlink en el directorio de la aplicación. Cuando el período definido para el seeding termine se elimina la copia de esta carpeta
+** *transmission/downloads/incomplete:* descargas pendientes en transmission
+** *transmission/downloads/movies:* descargas de radarr
+** *transmission/downloads/music:* descargas de lidarr ((no incluído en *docker-compose.yaml*))
+** *transmission/downloads/tv:* descargas de sonarr
+** *transmission/watch:* los torrents que se copien aquí serán descargados automáticamente por transmission
