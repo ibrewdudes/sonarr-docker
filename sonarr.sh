@@ -6,7 +6,7 @@ source ./envfile
 #-----------------------------------------------------------------------------------
 # Script para levantar y bajar sonarr
 #
-# Uso: 
+# Uso:  
 #   - Levantar sonarr: sonarr.sh
 #   - Bajar sonarr   : sonarr.sh down
 #-----------------------------------------------------------------------------------

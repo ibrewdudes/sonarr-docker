@@ -21,42 +21,21 @@ services:
       - PGID=1000
       - TZ=Etc/UTC
     volumes:
-      - ${BASE_DIR}/config/sonarr:/config:Z
+      - ${BASE_DIR}/config/sonarr:/config
       # Directorio donde moverá (o creará un hardlink) las descargas
       # de transmission
       #- ${BASE_DIR}/data:/data
       # Directorio donde transmission 'deja' los ficheros descargados
       # Sonar moverá (o usará un hardlink) el fichero descargado al 
       # directorio '/data'
-      - ${BASE_DIR}/data/transmission/downloads:/downloads:Z
+      - ${BASE_DIR}/data/transmission/downloads:/downloads
     ports:
       - 8989:8989
     depends_on:
       - my-transmission
       - my-jackett
     restart: unless-stopped
-
-  #---------------------------------------------------
-  # Radarr - movies
-  #---------------------------------------------------
-  my-radarr:
-    image: lscr.io/linuxserver/radarr:latest
-    container_name: radarr
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - UMASK=002
-      - TZ=Europe/Amsterdam
-    volumes:
-      - ${BASE_DIR}/config/radarr:/config:Z
-      - ${BASE_DIR}/data/transmission/downloads:/downloads:Z
-    ports:
-      - "7878:7878"
-    depends_on:
-      - my-transmission
-      - my-jackett
-    restart: unless-stopped
-
+    
   #---------------------------------------------------
   # Transmission - Client for downloading
   #---------------------------------------------------
@@ -72,24 +51,24 @@ services:
       - PUID=1000
       - PGID=1000
     volumes:
-      - ${BASE_DIR}/config/transmission:/config:Z
-      - ${BASE_DIR}/data/transmission/downloads:/downloads:Z
-      - ${BASE_DIR}/data/transmission/watch:/watch:Z
+      - ${BASE_DIR}/config/transmission:/config
+      - ${BASE_DIR}/data/transmission/downloads:/downloads
+      - ${BASE_DIR}/data/transmission/watch:/watch
     restart: unless-stopped
 
   #---------------------------------------------------
   # Proxy for torrent searchs
   #---------------------------------------------------
-  my-jackett:
-    image: lscr.io/linuxserver/jackett:latest
-    container_name: jackett
+  my-prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Europe/Madrid
       - AUTO_UPDATE=false
     volumes:
-      - ${BASE_DIR}/config/jackett:/config:Z
+      - ${BASE_DIR}/config/prowlarr:/config:Z
     ports:
-      - 9117:9117
+      - 9696:9696
     restart: unless-stopped

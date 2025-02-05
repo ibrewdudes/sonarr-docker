@@ -1,2 +1,0 @@
-DOWNLOADS_HOME=/path/to/base/dir
-COMPOSE_HOME=/path/to/docker-compose.yaml

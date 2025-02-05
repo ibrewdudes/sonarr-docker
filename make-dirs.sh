@@ -1,31 +1,21 @@
 # Crea los directorios para:
 #   - Sonarr
-#   - Radarr
 #   - Transmission
-#   - Jackett
+#   - Prowlarr
 
 # Cargamos las variables de entorno con los directorios de descargas
 # y del docker-compose.yaml
-source ./envfile
-
-declare -a config_dir=(
- 	"${DOWNLOADS_HOME}/config/jackett"
-	"${DOWNLOADS_HOME}/config/sonarr"
-	"${DOWNLOADS_HOME}/config/transmission"
-)
+source ./.env
 
 declare -a data_dir=(
- 	"${DOWNLOADS_HOME}/data/transmission/downloads"
-	"${DOWNLOADS_HOME}/data/transmission/watch"
-	"${DOWNLOADS_HOME}/data/tv"
+ 	"${BASE_DIR}/data/transmission/downloads"
+ 	"${BASE_DIR}/data/transmission/downloads/complete"
+ 	"${BASE_DIR}/data/transmission/downloads/incomplete"
+ 	"${BASE_DIR}/data/transmission/downloads/tv"
+  "${BASE_DIR}/config/transmission"
+  "${BASE_DIR}/data/transmission/watch"
+  "${BASE_DIR}/config/prowlarr"
 )
-
-# Crea los directorios de configuración
-for i in "${config_dir[@]}"
-  do
-    echo -e "Creando directorio ${i}\n"
-    mkdir -p $i
-  done
 
 # Crea los directorios de datos
 for i in "${data_dir[@]}"
@@ -33,4 +23,8 @@ for i in "${data_dir[@]}"
     echo -e "Creando directorio ${i}\n"
     mkdir -p $i
   done
+
+# Cambiamos el propietario al usuario del contenedor
+sudo chown -R 525287:525287 ${BASE_DIR}/data/transmission/downloads
+sudo chmod -R 755 ${BASE_DIR}/data/transmission/downloads
 
